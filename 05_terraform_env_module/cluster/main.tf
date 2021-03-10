@@ -82,36 +82,31 @@ resource "null_resource" "kubectl" {
    }  
   }
   
-  resource "null_resource" "kubectlrun" {
-  depends_on = [null_resource.kubectl]    
-  triggers = {
-    build_number = "${timestamp()}"
-  }
-  provisioner "local-exec" {
-       command = "mkdir ~/.kube && ./kubectl config view --raw > ~/.kube/config && ./kubectl get pods"
-   }  
-  }
+ # resource "null_resource" "kubectlrun" {
+ # depends_on = [null_resource.kubectl]    
+ # triggers = {
+ #   build_number = "${timestamp()}"
+ # }
+ # provisioner "local-exec" {
+ #      command = "mkdir ~/.kube && ./kubectl config view --raw > ~/.kube/config"
+ #  }  
+ # }
     
   
-  
-  
-resource "helm_release" "ingress" {
-  depends_on = [null_resource.kubectlrun]    
-  name       = "ingress"
-  chart      = "aws-alb-ingress-controller"
-  repository = "https://charts.helm.sh/incubator"
-#  version    = "1.0.2"
+ provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+  }
+}
+
+resource "helm_release" "nginx_ingress" {
+  name       = "nginx-ingress-controller"
+
+  repository = "https://charts.bitnami.com/bitnami"
+  chart      = "nginx-ingress-controller"
 
   set {
-    name  = "autoDiscoverAwsRegion"
-    value = "true"
-  }
-  set {
-    name  = "autoDiscoverAwsVpcID"
-    value = "true"
-  }
-  set {
-    name  = "clusterName"
-    value = var.cluster_name
+    name  = "service.type"
+    value = "ClusterIP"
   }
 }
