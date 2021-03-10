@@ -53,6 +53,8 @@ module "eks" {
 }
 
 resource "aws_iam_policy" "worker_policy" {
+  depends_on = [module.eks]   
+ 
   name        = "worker-policy-${var.cluster_name}"
   description = "Worker policy for the ALB Ingress"
 
@@ -70,7 +72,6 @@ provider "helm" {
 }
 
 resource "helm_release" "ingress" {
-  depends_on = [module.eks.kubernetes_config_map]   
   name       = "ingress"
   chart      = "aws-alb-ingress-controller"
   repository = "http://storage.googleapis.com/kubernetes-charts-incubator"
