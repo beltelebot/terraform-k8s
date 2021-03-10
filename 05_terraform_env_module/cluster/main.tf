@@ -76,7 +76,7 @@ resource "null_resource" "kubectl" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-       command = "mkdir -p $HOME/.kube && cp -i /etc/kubernetes/admin.conf $HOME/.kube/config &&  chown $(id -u):$(id -g) $HOME/.kube/config && ./kubectl cluster-info"
+       command = "mkdir -p $HOME/.kube && cp -i ./kubeconfig_eks-staging $HOME/.kube/config &&  chown $(id -u):$(id -g) $HOME/.kube/config && ./kubectl cluster-info"
    }  
   }  
 
