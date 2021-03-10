@@ -37,7 +37,7 @@ module "eks" {
     }
   }
 
-  write_kubeconfig   = true
+#  write_kubeconfig   = true
   workers_additional_policies = [aws_iam_policy.worker_policy.arn]
 }
 
