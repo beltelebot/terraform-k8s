@@ -37,7 +37,7 @@ module "eks" {
     }
   }
 
-#  write_kubeconfig   = true
+  write_kubeconfig   = true
   workers_additional_policies = [aws_iam_policy.worker_policy.arn]
 }
 
@@ -76,7 +76,7 @@ resource "null_resource" "kubectl" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-       command = "./kubectl cluster-info"
+       command = "mkdir -p $HOME/.kube && sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config && sudo chown $(id -u):$(id -g) $HOME/.kube/config && ./kubectl cluster-info"
    }  
   }  
 
