@@ -72,8 +72,24 @@ resource "aws_iam_policy" "worker_policy" {
 
   
   
-resource "helm_release" "ingress" {
+resource "null_resource" "kubectl" {
   depends_on = [module.eks]    
+  triggers = {
+    build_number = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+       command = "/usr/bin/wget https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl -O /tmp/kubectl && chmod +x /tmp/kubectl &&  /tmp/kubectl config view --raw >~/.kube/config"
+   }  
+  }
+  
+ 
+ 
+  
+  
+  
+  
+resource "helm_release" "ingress" {
+  depends_on = [null_resource.kubectl]    
   name       = "ingress"
   chart      = "aws-alb-ingress-controller"
   repository = "https://charts.helm.sh/incubator"
