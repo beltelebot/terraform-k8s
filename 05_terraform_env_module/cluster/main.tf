@@ -47,7 +47,7 @@ module "eks" {
   }
 
   write_kubeconfig   = true
-  config_output_path = "~/.kube/"
+  config_output_path = "./config"
 
   workers_additional_policies = [aws_iam_policy.worker_policy.arn]
 }
@@ -93,11 +93,12 @@ resource "null_resource" "kubectl" {
  # }
  provider "helm" {
   kubernetes {
-    config_path = "~/.kube/config"
+    config_path = "./config"
   }
 }
 
 resource "helm_release" "nginx_ingress" {
+  depends_on = [null_resource.kubectl]   
   name       = "nginx-ingress-controller"
 
   repository = "https://charts.bitnami.com/bitnami"
