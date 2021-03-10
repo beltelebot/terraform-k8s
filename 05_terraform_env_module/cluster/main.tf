@@ -76,7 +76,7 @@ resource "null_resource" "kubectl" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-       command = "cat ./kubeconfig_eks-staging && kubectl get pods"
+       command = "cat ./kubeconfig_eks-staging && ./kubectl get pods"
    }  
   }  
 
