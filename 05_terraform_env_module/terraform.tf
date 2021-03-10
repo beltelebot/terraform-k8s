@@ -14,14 +14,3 @@ provider "aws" {
 }
 
 
-provider "http" {}
-
-
-
-  
- provider "helm" {
-  kubernetes {
-    config_path = "./kubeconfig_eks-staging"
-  }
-}
-
