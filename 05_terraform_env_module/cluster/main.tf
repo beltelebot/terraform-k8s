@@ -47,7 +47,7 @@ module "eks" {
   }
 
   write_kubeconfig   = true
-  config_output_path = "./config"
+#  config_output_path = "./config"
 
   workers_additional_policies = [aws_iam_policy.worker_policy.arn]
 }
@@ -93,7 +93,7 @@ resource "null_resource" "kubectl" {
  # }
  provider "helm" {
   kubernetes {
-    config_path = "./config"
+    config_path = "~/config"
   }
 }
 
