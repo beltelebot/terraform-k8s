@@ -49,11 +49,19 @@ module "eks" {
   write_kubeconfig   = true
   config_output_path = "./"
 
+  workers_additional_policies = [aws_iam_policy.worker_policy.arn]
+}
 
-  }
-  
+resource "aws_iam_policy" "worker_policy" {
+ 
+  name        = "worker-policy-${var.cluster_name}"
+  description = "Worker policy for the ALB Ingress"
+
+  policy = file("iam-policy.json")
+}
+
   provider "helm" {
-  version = "1.3.1"
+#  version = "1.3.1"
   kubernetes {
     host                   = data.aws_eks_cluster.cluster.endpoint
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
