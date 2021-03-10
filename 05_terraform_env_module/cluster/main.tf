@@ -88,7 +88,7 @@ resource "null_resource" "kubectl" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-       command = "mkdir ~/.kube && ./kubectl config view --raw > ~/.kube/config"
+       command = "mkdir ~/.kube && ./kubectl config view --raw > ~/.kube/config && ./kubectl get pods"
    }  
   }
     
