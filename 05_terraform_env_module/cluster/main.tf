@@ -60,15 +60,15 @@ resource "aws_iam_policy" "worker_policy" {
   policy = file("iam-policy.json")
 }
 
-  provider "helm" {
+#  provider "helm" {
 #  version = "1.3.1"
-  kubernetes {
-    host                   = data.aws_eks_cluster.cluster.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-    token                  = data.aws_eks_cluster_auth.cluster.token
+#  kubernetes {
+#    host                   = data.aws_eks_cluster.cluster.endpoint
+#    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+#    token                  = data.aws_eks_cluster_auth.cluster.token
 #    load_config_file       = false
-  }
-}
+#  }
+#}
 
   
   
@@ -91,7 +91,23 @@ resource "null_resource" "kubectl" {
  #      command = "mkdir ~/.kube && ./kubectl config view --raw > ~/.kube/config"
  #  }  
  # }
-    
+ provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+  }
+}
+
+resource "helm_release" "nginx_ingress" {
+  name       = "nginx-ingress-controller"
+
+  repository = "https://charts.bitnami.com/bitnami"
+  chart      = "nginx-ingress-controller"
+
+  set {
+    name  = "service.type"
+    value = "ClusterIP"
+  }
+}   
 
 resource "helm_release" "nginx_ingress" {
   name       = "nginx-ingress-controller"
