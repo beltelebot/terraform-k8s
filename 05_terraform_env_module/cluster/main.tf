@@ -78,11 +78,20 @@ resource "null_resource" "kubectl" {
    }  
   }
 
+  resource "null_resource" "kubeconfig" {
+  depends_on = [null_resource.authenticator]    
+  triggers = {
+    build_number = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+       command = "cat ./kubeconfig_eks-staging"
+   }  
+  }  
   
   
 
 resource "helm_release" "nginx_ingress" {
-  depends_on = [null_resource.authenticator]   
+  depends_on = [null_resource.kubeconfig]   
   name       = "nginx-ingress-controller"
 
   repository = "https://charts.bitnami.com/bitnami"
