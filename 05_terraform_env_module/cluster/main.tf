@@ -1,21 +1,13 @@
 
 
-variable "cluster_name" {
-  default = "my-cluster"
-}
+#variable "cluster_name" {
+#  default = "my-cluster"
+#}
 
 
 data "aws_availability_zones" "available" {
 }
 
-
-data "aws_eks_cluster" "cluster" {
-  name = module.eks.cluster_id
-}
-
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks.cluster_id
-}
 
 
 provider "kubernetes" {
@@ -84,20 +76,32 @@ resource "null_resource" "kubectl" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-       command = "cat ./kubeconfig_eks-staging"
+       command = "cat ./kubeconfig_eks-staging && kubectl get pods"
    }  
   }  
+
+  
+  
+data "aws_eks_cluster" "cluster" {
+  name = module.eks.cluster_id
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks.cluster_id
+}
+
   
 provider "helm" {
-  version = "1.3.1"
+#  version = "1.3.1"
   kubernetes {
     host                   = data.aws_eks_cluster.cluster.endpoint
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-    token                  = data.aws_eks_cluster_auth.cluster.token
-    load_config_file       = false
+    token                  = base64decode(data.aws_eks_cluster_auth.cluster.token)
+#    load_config_file       = false
   }
 }  
 
+  
 resource "helm_release" "nginx_ingress" {
   depends_on = [null_resource.kubeconfig]   
   name       = "nginx-ingress-controller"
