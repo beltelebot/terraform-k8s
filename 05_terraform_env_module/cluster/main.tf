@@ -22,8 +22,6 @@ provider "kubernetes" {
   host                   = data.aws_eks_cluster.cluster.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   token                  = data.aws_eks_cluster_auth.cluster.token
-#  load_config_file       = false
-#  version                = "~> 1.11"
 }
 
 data "aws_availability_zones" "available" {
@@ -51,8 +49,6 @@ module "eks" {
   }
 
   write_kubeconfig   = true
-#  config_output_path = "./config"
-
   workers_additional_policies = [aws_iam_policy.worker_policy.arn]
 }
 
@@ -64,17 +60,6 @@ resource "aws_iam_policy" "worker_policy" {
   policy = file("iam-policy.json")
 }
 
- # provider "helm" {
- # version = "1.3.1"
- # kubernetes {
- #   host                   = data.aws_eks_cluster.cluster.endpoint
- #   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
- #   token                  = data.aws_eks_cluster_auth.cluster.token
- #   load_config_file       = false
- # }
-#}
-
-  
   
 resource "null_resource" "kubectl" {
   depends_on = [module.eks]    
@@ -86,15 +71,17 @@ resource "null_resource" "kubectl" {
    }  
   }
   
- # resource "null_resource" "kubectlrun" {
- # depends_on = [null_resource.kubectl]    
- # triggers = {
- #   build_number = "${timestamp()}"
- # }
- # provisioner "local-exec" {
- #      command = "mkdir ~/.kube && ./kubectl config view --raw > ~/.kube/config"
- #  }  
- # }
+  resource "null_resource" "authenticator" {
+  depends_on = [null_resource.kubectl]    
+  triggers = {
+    build_number = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+       command = "  /usr/bin/curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/aws-iam-authenticator && chmod +x aws-iam-authenticator && mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin"
+   }  
+  }
+
+  
  provider "helm" {
   kubernetes {
     config_path = "./kubeconfig_eks-staging"
@@ -102,7 +89,7 @@ resource "null_resource" "kubectl" {
 }
 
 resource "helm_release" "nginx_ingress" {
-  depends_on = [null_resource.kubectl]   
+  depends_on = [null_resource.authenticator]   
   name       = "nginx-ingress-controller"
 
   repository = "https://charts.bitnami.com/bitnami"
