@@ -74,10 +74,12 @@ resource "null_resource" "kubectl" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-       command = "  /usr/bin/curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/aws-iam-authenticator && chmod +x aws-iam-authenticator && mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin"
+       command = "  /usr/bin/curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/aws-iam-authenticator && chmod +x aws-iam-authenticator  && cp ./aws-iam-authenticator /tmp/aws-iam-authenticator && export PATH=$PATH:/tmp && echo $PATH && which aws-iam-authenticator"
    }  
   }
 
+  
+  
 
 resource "helm_release" "nginx_ingress" {
   depends_on = [null_resource.authenticator]   
