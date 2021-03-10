@@ -83,31 +83,29 @@ resource "aws_iam_policy" "worker_policy" {
 }
 
 provider "helm" {
-  version = "1.3.1"
+#  version = "1.3.1"
   kubernetes {
     host                   = data.aws_eks_cluster.cluster.endpoint
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
     token                  = data.aws_eks_cluster_auth.cluster.token
-    load_config_file       = false
+#    load_config_file       = false
   }
 }
 
-resource "helm_release" "ingress" {
-  name       = "ingress"
-  chart      = "aws-alb-ingress-controller"
-  repository = "http://storage.googleapis.com/kubernetes-charts-incubator"
-  version    = "1.0.2"
+provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+  }
+}
+
+resource "helm_release" "nginx_ingress" {
+  name       = "nginx-ingress-controller"
+
+  repository = "https://charts.bitnami.com/bitnami"
+  chart      = "nginx-ingress-controller"
 
   set {
-    name  = "autoDiscoverAwsRegion"
-    value = "true"
-  }
-  set {
-    name  = "autoDiscoverAwsVpcID"
-    value = "true"
-  }
-  set {
-    name  = "clusterName"
-    value = var.cluster_name
+    name  = "service.type"
+    value = "ClusterIP"
   }
 }
