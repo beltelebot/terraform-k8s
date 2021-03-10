@@ -53,6 +53,7 @@ module "eks" {
 }
 
 resource "aws_iam_policy" "worker_policy" {
+  depends_on = [module.eks]    
  
   name        = "worker-policy-${var.cluster_name}"
   description = "Worker policy for the ALB Ingress"
