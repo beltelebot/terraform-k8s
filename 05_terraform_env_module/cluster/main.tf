@@ -74,7 +74,7 @@ resource "helm_release" "ingress" {
   depends_on = [module.eks]    
   name       = "ingress"
   chart      = "aws-alb-ingress-controller"
-  repository = "https://charts.helm.sh/incubator"
+  repository = "https://charts.helm.sh/stable"
 #  version    = "1.0.2"
 
   set {
