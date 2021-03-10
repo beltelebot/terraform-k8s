@@ -78,18 +78,25 @@ resource "null_resource" "kubectl" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-       command = "/usr/bin/wget https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl && chmod +x kubectl &&  ./kubectl config view --raw >~/.kube/config"
+       command = "/usr/bin/wget https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl && chmod +x kubectl && "
    }  
   }
   
- 
- 
-  
+  resource "null_resource" "kubectlrun" {
+  depends_on = [null_resource.kubectl]    
+  triggers = {
+    build_number = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+       command = "./kubectl config view --raw >~/.kube/config"
+   }  
+  }
+    
   
   
   
 resource "helm_release" "ingress" {
-  depends_on = [null_resource.kubectl]    
+  depends_on = [null_resource.kubectlrun]    
   name       = "ingress"
   chart      = "aws-alb-ingress-controller"
   repository = "https://charts.helm.sh/incubator"
