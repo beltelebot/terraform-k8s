@@ -70,6 +70,7 @@ provider "helm" {
 }
 
 resource "helm_release" "ingress" {
+  depends_on = [module.eks.kubernetes_config_map.aws_auth[0]]   
   name       = "ingress"
   chart      = "aws-alb-ingress-controller"
   repository = "http://storage.googleapis.com/kubernetes-charts-incubator"
