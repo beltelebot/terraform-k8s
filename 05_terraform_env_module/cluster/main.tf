@@ -28,7 +28,7 @@ data "aws_availability_zones" "available" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "12.2.0"
+#  version = "12.2.0"
 
   cluster_name    = "eks-${var.cluster_name}"
   cluster_version = "1.19"
@@ -78,7 +78,7 @@ resource "null_resource" "kubectl" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-       command = "/usr/bin/wget https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl  && chmod +x kubectl &&  ./kubectl config view --raw > ~/.kube/config"
+       command = "/usr/bin/wget https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl && chmod +x kubectl &&  ./kubectl config view --raw >~/.kube/config"
    }  
   }
   
