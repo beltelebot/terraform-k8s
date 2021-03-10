@@ -60,23 +60,23 @@ resource "null_resource" "kubectl" {
    }  
   }
   
-  resource "null_resource" "authenticator" {
+ # resource "null_resource" "authenticator" {
+ # depends_on = [null_resource.kubectl]    
+ # triggers = {
+ #   build_number = "${timestamp()}"
+ # }
+ # provisioner "local-exec" {
+ #      command = "  /usr/bin/curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/aws-iam-authenticator && chmod +x aws-iam-authenticator  && cp ./aws-iam-authenticator /tmp/aws-iam-authenticator && export PATH=$PATH:/tmp && echo $PATH && which aws-iam-authenticator"
+ #  }  
+ # }
+
+  resource "null_resource" "kubeconfig" {
   depends_on = [null_resource.kubectl]    
   triggers = {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-       command = "  /usr/bin/curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/aws-iam-authenticator && chmod +x aws-iam-authenticator  && cp ./aws-iam-authenticator /tmp/aws-iam-authenticator && export PATH=$PATH:/tmp && echo $PATH && which aws-iam-authenticator"
-   }  
-  }
-
-  resource "null_resource" "kubeconfig" {
-  depends_on = [null_resource.authenticator]    
-  triggers = {
-    build_number = "${timestamp()}"
-  }
-  provisioner "local-exec" {
-       command = "cat ./kubeconfig_eks-staging && ./kubectl get pods"
+       command = "./kubectl cluster-info"
    }  
   }  
 
