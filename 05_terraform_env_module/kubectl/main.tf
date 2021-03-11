@@ -18,7 +18,7 @@ data "aws_availability_zones" "available" {
 
   
 resource "null_resource" "kubectlapply" {
-  depends_on = [module.eks]    
+#  depends_on = [module.eks]    
   triggers = {
     build_number = "${timestamp()}"
   }
