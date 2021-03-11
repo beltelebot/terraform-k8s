@@ -9,13 +9,13 @@ provider "aws" {
 
 
 data "aws_eks_cluster" "cluster" {
-  name = module.cluster.cluster_name
+  name = cluster.cluster_name
  # "${module.MODULE_NAME.OUTPUT_NAME}"
 
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.cluster.cluster_name
+  name = cluster.cluster_name
 }
 
 provider "kubectl" {
