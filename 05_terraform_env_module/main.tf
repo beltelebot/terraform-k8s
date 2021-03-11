@@ -6,5 +6,5 @@ module "cluster" {
 module "kubectl" {
 #  depends_on = [module.cluster]
   source = "./kubectl"
-  
+  cluster_name = var.cluster_name
 }
