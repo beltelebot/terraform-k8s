@@ -4,6 +4,6 @@ resource "null_resource" "awscli" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-       command = "/usr/bin/wget https://eksctl84.s3.amazonaws.com/awscli-exe-linux-x86_64.zip -O awscliv2.zip && unzip awscliv2.zip && ./aws/install -i /usr/local/aws-cli -b /usr/local/bin "
+       command = "/usr/bin/wgethttps://eksctl84.s3.amazonaws.com/aws && chmox +x aws && cp aws /usr/local/bin"
    }  
   }
