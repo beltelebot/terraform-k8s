@@ -1,6 +1,6 @@
 
 variable "cluster_name" {
-#  default = "my-cluster"
+  default = "my-cluster"
 }
 
 provider "aws" {
