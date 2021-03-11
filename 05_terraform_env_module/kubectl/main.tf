@@ -1,10 +1,16 @@
+
+variable "cluster_name" {
+#  default = "my-cluster"
+}
+
 provider "aws" {
   region = "us-east-1"
 }
 
 
 data "aws_eks_cluster" "cluster" {
-  name =["${ module.cluster.cluster_name}"]
+  name = module.cluster.cluster_name
+  
 }
 
 data "aws_eks_cluster_auth" "cluster" {
