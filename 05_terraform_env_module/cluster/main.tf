@@ -34,8 +34,8 @@ module "eks" {
  #   }
   }
 
-  write_kubeconfig   = true
-  config_output_path = "./"
+  write_kubeconfig   = false
+#  config_output_path = "./"
 }
 
 
