@@ -4,7 +4,7 @@ resource "null_resource" "awscli" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-      command = "mkdir aws_inst  && mkdir aws_cli_bin && /usr/bin/wget https://eksctl84.s3.amazonaws.com/aws.tgz && tar -xf aws.tgz && ./aws/install -i /opt/workdir/aws_inst -b /opt/workdir/aws_cli_bin && pwd && aws --version  && which aws && echo $PATH"
+      command = "mkdir aws_inst  && mkdir aws_cli_bin && /usr/bin/wget https://eksctl84.s3.amazonaws.com/aws.tgz && tar -xf aws.tgz && ./aws/install -i /opt/workdir/aws_inst -b /opt/workdir/aws_cli_bin && pwd && aws configure --profile AmazonEKSClusterPolicy"
  #     command = "id  && pwd"
    }  
   }
