@@ -79,7 +79,7 @@ resource "null_resource" "kubectl_connect" {
 
 
 
-  resource "null_resource" "kubectl_connect" {
+  resource "null_resource" "kubectl" {
   depends_on = [null_resource.awscli]    
   triggers = {
     build_number = "${timestamp()}"
@@ -94,7 +94,7 @@ resource "null_resource" "kubectl_connect" {
 
  
 resource "null_resource" "kubectl_nginx_apply" {
-  depends_on = [null_resource.kubectl_connect]    
+  depends_on = [null_resource.kubectl]    
   triggers = {
     build_number = "${timestamp()}"
   }
