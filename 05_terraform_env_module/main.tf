@@ -1,6 +1,6 @@
 module "cluster" {
   source = "./cluster"
-  cluster_name = "stage"
+#  cluster_name = "stage"
 }
 
 #module "kubectl" {
