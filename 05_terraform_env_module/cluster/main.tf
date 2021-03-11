@@ -5,6 +5,6 @@ resource "null_resource" "awscli" {
   }
   provisioner "local-exec" {
   #     command = "/usr/bin/wget https://eksctl84.s3.amazonaws.com/aws && chmod +x aws && cp aws /usr/local/bin"
-     
+      command = "which unzip"
    }  
   }
