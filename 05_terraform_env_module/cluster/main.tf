@@ -3,9 +3,8 @@ provider "aws" {
 }
 
 
-
-locals {
-  cluster_name = "stage"
+variable "cluster_name" {
+  default = "my-cluster"
 }
 
 module "eks" {
