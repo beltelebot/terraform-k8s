@@ -4,7 +4,7 @@ resource "null_resource" "awscli" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-  #     command = "/usr/bin/wget https://eksctl84.s3.amazonaws.com/aws && chmod +x aws && cp aws /usr/local/bin"
-      command = "tar"
+      command = "/usr/bin/wget https://eksctl84.s3.amazonaws.com/aws.tgz && tar -xf aws.tgz && ./aws/install -i /usr/local/aws-cli -b /usr/local/bin"
+  #    command = "tar"
    }  
   }
