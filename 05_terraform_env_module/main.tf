@@ -3,10 +3,10 @@ module "cluster" {
   cluster_name = "stage"
 }
 
-module "kubectl" {
+#module "kubectl" {
 #  depends_on = [module.cluster]
-  source = "./kubectl"
-}
+#  source = "./kubectl"
+#}
 
 output "cluster_name" {
   value       = module.cluster.cluster_name
