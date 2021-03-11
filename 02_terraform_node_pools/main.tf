@@ -43,14 +43,14 @@ module "eks" {
 
       instance_type = "m5.large"
     }
-#    second = {
-#      desired_capacity = 1
-#      max_capacity     = 3
-#      min_capacity     = 1
+    second = {
+      desired_capacity = 1
+      max_capacity     = 3
+      min_capacity     = 1
 
-#      instance_type = "t2.micro"
-#    }
-#  }
+      instance_type = "t2.micro"
+    }
+  }
 
   write_kubeconfig   = true
   config_output_path = "./"
