@@ -52,7 +52,7 @@ module "eks" {
  #   }
   }
 
-#  write_kubeconfig   = false
+  write_kubeconfig   = false
 #  config_output_path = "./"
 }
 
@@ -73,7 +73,7 @@ resource "null_resource" "kubectl_connect" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-      command = "aws eks --region $AWS_DEFAULT_REGION  update-kubeconfig --name local.cluster_name"
+      command = "aws eks --region us-east-1  update-kubeconfig --name stage"
    }  
   }
 
@@ -85,10 +85,8 @@ resource "null_resource" "kubectl_connect" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-    command = <<-EOT
-       exec "/usr/bin/curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && chmod +x ./kubectl"
-    EOT
-   }  
+    command = "command = "/usr/bin/wget  https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl  -O /tmp/kubectl && chmod +x /tmp/kubectl"
+     }  
   }
 
 
@@ -99,6 +97,6 @@ resource "null_resource" "kubectl_nginx_apply" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-      command = "kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.44.0/deploy/static/provider/aws/deploy.yaml"
+      command = "/tmp/kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.44.0/deploy/static/provider/aws/deploy.yaml"
    }  
   }
