@@ -1,6 +1,5 @@
 module "cluster" {
   source = "./cluster"
-  region = "us-east-1"
   cluster_name = "stage"
 }
 
