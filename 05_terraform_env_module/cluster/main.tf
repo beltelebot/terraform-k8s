@@ -65,3 +65,31 @@ resource "null_resource" "kubectl_connect" {
    }  
   }
 
+
+
+  resource "null_resource" "kubectl_connect" {
+  depends_on = [null_resource.awscli]    
+  triggers = {
+    build_number = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+    command = <<-EOT
+       exec "/usr/bin/curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && chmod +x ./kubectl"
+    EOT
+   }  
+  }
+
+
+ 
+resource "null_resource" "kubectl_nginx_apply" {
+  depends_on = [null_resource.kubectl_connect]    
+  triggers = {
+    build_number = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+      command = "kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.44.0/deploy/static/provider/aws/deploy.yaml"
+   }  
+  }
+
+
+ 

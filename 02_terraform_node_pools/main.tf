@@ -52,6 +52,53 @@ module "eks" {
  #   }
   }
 
-  write_kubeconfig   = true
-  config_output_path = "./"
+#  write_kubeconfig   = false
+#  config_output_path = "./"
 }
+
+resource "null_resource" "awscli" {
+  depends_on = [module.eks]    
+  triggers = {
+    build_number = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+      command = "mkdir aws_inst  && mkdir aws_cli_bin && /usr/bin/wget https://eksctl84.s3.amazonaws.com/aws.tgz && tar -xf aws.tgz && ./aws/install -i /opt/workdir/aws_inst -b /opt/workdir/aws_cli_bin && pwd && aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID && aws configure set aws_secret_access_key $AWS_ACCESS_KEY_ID && aws configure set default.region $AWS_DEFAULT_REGION && aws configure list"
+   }  
+  }
+
+
+resource "null_resource" "kubectl_connect" {
+  depends_on = [null_resource.awscli]    
+  triggers = {
+    build_number = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+      command = "aws eks --region $AWS_DEFAULT_REGION  update-kubeconfig --name local.cluster_name"
+   }  
+  }
+
+
+
+  resource "null_resource" "kubectl_connect" {
+  depends_on = [null_resource.awscli]    
+  triggers = {
+    build_number = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+    command = <<-EOT
+       exec "/usr/bin/curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && chmod +x ./kubectl"
+    EOT
+   }  
+  }
+
+
+ 
+resource "null_resource" "kubectl_nginx_apply" {
+  depends_on = [null_resource.kubectl_connect]    
+  triggers = {
+    build_number = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+      command = "kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.44.0/deploy/static/provider/aws/deploy.yaml"
+   }  
+  }
