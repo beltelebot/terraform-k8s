@@ -85,7 +85,7 @@ resource "null_resource" "kubectl_connect" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-    command = "command = "/usr/bin/wget  https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl  -O /tmp/kubectl && chmod +x /tmp/kubectl"
+    command = "/usr/bin/wget  https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl  -O /tmp/kubectl && chmod +x /tmp/kubectl"
      }  
   }
 
