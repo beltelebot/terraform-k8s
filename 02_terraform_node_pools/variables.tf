@@ -5,7 +5,7 @@ variable "cluster_name" {
 }
 
 variable "eks_version" {
-  default     = "1.19"
+  default     = "1.18"
   description = "Kubernetes version to use for the cluster."
 }
 
